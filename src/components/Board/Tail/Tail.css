@@ -1,0 +1,35 @@
+.Tail {
+   width: 100px;
+   height: 100px;
+   margin: 5px;
+   border-radius: 5px;
+   background-color: #fff;
+   cursor: pointer;
+}
+.teal {
+   background-color: #1de9b6;
+}
+.red {
+   background-color: #d32f2f;
+}
+.purple {
+   background-color: #8e24aa;
+}
+.indigo {
+   background-color: #3f51b5;
+}
+.green {
+   background-color: #2e7d32;
+}
+.amber {
+   background-color: #ffc400;
+}
+.cyan{
+   background-color: #00b8d4;
+}
+.orange{
+   background-color: #ff6d00;
+}
+.open {
+   cursor: default;
+}

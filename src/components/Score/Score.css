@@ -1,0 +1,22 @@
+.Score {
+   display: inline-block;
+   color: white;
+   background-color: #bbada0;
+   font-weight: bold;
+   position: relative;
+   text-align: center;
+   user-select: none;
+   padding: 25px 25px 5px 25px;
+   border-radius: 5px;
+}
+.Score::after {
+   content: 'score';
+   position: absolute;
+   width: 100%;
+   text-transform: uppercase;
+   text-align: center;
+   top: 8px;
+   font-size: 13px;
+   left: 0;
+   color: #eee4ad;
+}
