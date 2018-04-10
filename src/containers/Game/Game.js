@@ -1,12 +1,13 @@
 import React, { Component, Fragment } from 'react'
+import ReactDOM from 'react-dom'
 import initCells from '../../utils/initCells'
-import classes from './Game.css'
+import BestScore from '../../utils/bestScore'
+import ControlPanel from '../../components/ControlPanel/ControlPanel'
 import Board from '../../components/Board/Board'
-import Button from '../../components/ui/Button/Button'
-import Score from '../../components/Score/Score'
 import Modal from '../../components/ui/Modal/Modal'
+import { every, cloneDeep } from 'lodash'
 
-const CELLS = [   
+const CELLS = [
    { id: 1, color: 'teal', closed: true },
    { id: 2, color: 'teal', closed: true },
    { id: 3, color: 'red', closed: true },
@@ -22,56 +23,83 @@ const CELLS = [
    { id: 13, color: 'cyan', closed: true },
    { id: 14, color: 'cyan', closed: true },
    { id: 15, color: 'orange', closed: true },
-   { id: 16, color: 'orange', closed: true } 
+   { id: 16, color: 'orange', closed: true }
 ]
 
 class Game extends Component {
 
-   state = {
-      cells: initCells(CELLS),
-      currentCell: null,
-      score: 0,
-      finish: true
-   }
-   newGameHandler = () => {
-      this.setState({ 
+   state = this.initState()
+
+   initState() {
+      return { 
          cells: initCells(CELLS),
          currentCell: null,
-         score: 0, 
-         finish: false
-      })
-   }
-   openHandler = (id) => {
-      const idx = this.state.cells.findIndex( cell => cell.id === id )
-      const updatedCells = [
-         ...this.state.cells
-      ]
-      updatedCells[idx] = {...updatedCells[idx], closed: false}
-      this.setState({ cells: updatedCells, currentCell: id })
-      if( this.state.currentCell !== id ) {
-         this.updateScore()
+         score: 0,
+         best: BestScore.get(),
+         attempt: 1,
+         isModalOpen: false
       }
    }
-   updateScore = () => {
+   newGame = () => {
+      this.setState(this.initState())
+   }
+   openHandler = (id) => {
+
+      const idx = this.state.cells.findIndex(cell => cell.id === id)
+      const updatedCells = cloneDeep(this.state.cells)
+      updatedCells[idx].closed =  false 
+
+      if (this.state.score === 0 ) {
+         this.setState({ cells: updatedCells, currentCell: updatedCells[idx] })
+         this.updateScore()
+      } else if (this.state.score > 0 && !this.state.currentCell) {
+         this.setState({ cells: updatedCells, currentCell: updatedCells[idx] })
+      } else { 
+         if( this.state.currentCell.color === updatedCells[idx].color ) {
+            this.updateScore(this.state.attempt)
+            this.setState({ 
+               cells: updatedCells, currentCell: null, attempt: 1
+            }, () => this.isWinner())
+         } else {
+            const newAttempt = this.state.attempt + 1
+            this.setState({ attempt: newAttempt })
+         }
+      }
+   }
+   updateScore = (attempt = 1) => {
       const oldScore = this.state.score
-      const newScore = oldScore === 0 ? 1 : Math.round(oldScore * 1.618)
+      const visibleCells = this.state.cells.filter( item => item.closed)
+      const newScore = oldScore + (oldScore === 0 ? 1 : Math.round((visibleCells.length * 100) / attempt ))
       this.setState({ score: newScore })
    }
-
-   modalRender = () => {
-      this.setState({ finish: false })
+   toggleModal = () => {
+      this.setState({ isModalOpen: !this.state.isModalOpen })
    }
-
+   isWinner = () => {
+      const isWinner = every( this.state.cells, { closed: false} )
+      if(isWinner) {
+         setTimeout(() => {
+            this.setState({ isModalOpen: true })
+         }, 1000 )
+         if(this.state.score > this.state.best) {
+            this.setState({ best : this.state.score })
+            BestScore.set(this.state.score)
+         }
+      }
+   }
    render() {
-      return(
+      const { best, attempt, score } = this.state
+      return (
          <Fragment>
-            <h1>Game</h1>
-            <div className={ classes.heading }>
-               <Button clicked={ this.newGameHandler }>New game</Button>
-               <Score points={ this.state.score } />
-            </div>
-            <Board cells={this.state.cells} open={ this.openHandler } />
-            { this.state.finish ? <Modal clicked={this.modalRender} /> : null  }
+            <h1>Test Game</h1>
+            <ControlPanel best={best} attempt={attempt} score={score} newGameHandler={ this.newGame } />
+            <Board cells={this.state.cells} open={this.openHandler} />
+            {this.state.isModalOpen &&
+               ReactDOM.createPortal(
+                  <Modal onClose={this.toggleModal} totalScore={ this.state.score } />,
+                  document.getElementById('modal')
+               )
+            }
          </Fragment>
       )
    }
