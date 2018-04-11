@@ -6,11 +6,12 @@ const Board = (props) => {
       const {cells} = props
       return (
             <div className={classes.Board}>
-                  {cells.map(({ id, color, closed }) => (
+                  {cells.map(({ id, color, closed, touched }) => (
                         <Tail 
                               key={id} 
                               colorType={color}
-                              closed={ closed }
+                              closed={closed}
+                              touched={touched}
                               clicked={() => props.open(id)} 
                         />
                   ))}

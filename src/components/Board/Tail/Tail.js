@@ -3,18 +3,21 @@ import classes from './Tail.css'
 
 const tail = (props) => {
 
-   const wrapClasses = [classes.TailWrapper]
-   const assigntClasses = [classes.Tail]
+   const animateClasses = [classes.TailWrapper]
+   const mainClasses = [classes.Tail]
    
    if ( !props.closed ) {
-      assigntClasses.push( classes[props.colorType] )
-      wrapClasses.push( classes.open )
+      animateClasses.push( classes.open )
+      mainClasses.push( classes[props.colorType] )
+   }
+   if ( props.touched && props.closed ) {
+      animateClasses.push( classes.shake )
    }
    return (
-      <div className={ wrapClasses.join(' ') }>
+      <div className={ animateClasses.join(' ') }>
          <div
             onClick={props.clicked}
-            className={ assigntClasses.join(' ') }
+            className={ mainClasses.join(' ') }
          >
          </div>
       </div>

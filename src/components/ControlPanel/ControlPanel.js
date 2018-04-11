@@ -7,9 +7,9 @@ const controlPanel = (props) => {
    return (
       <div className={classes.ControlPanel} >  
          <Button clicked={props.newGameHandler}>New game</Button>
-         <Score points={props.attempt} text="Try" />
-         <Score points={props.score} text="Score" />
-         <Score points={props.best} text="Best" />
+         <Score points={props.attempt} text='Try' background='#9e9e9e' />
+         <Score points={props.score} text='Score' background='#37474f' />
+         <Score points={props.best} text='Best' background='#ff6e40' />
       </div>
    )
 }
