@@ -5,7 +5,7 @@ import Score from '../Score/Score'
 
 const controlPanel = (props) => {
    return (
-      <div className={classes.ControlPanel} >  
+      <div className={classes.ControlPanel} >
          <Button clicked={props.newGameHandler}>New game</Button>
          <Score points={props.attempt} text='Try' background='#9e9e9e' />
          <Score points={props.score} text='Score' background='#37474f' />

@@ -1,4 +1,5 @@
 .Board {
+   position: relative;
    background-color: #bbada0;
    border-radius: 10px;
    display: flex;

@@ -3,7 +3,6 @@ class BestScore {
    constructor() {
       this.name = 'bestscore'
    }
-
    static _isExists() {
       return localStorage.getItem(this.name) ? true : false
    }
@@ -11,10 +10,10 @@ class BestScore {
       if( BestScore._isExists() ) {
          return localStorage.getItem(this.name)
       }
-      return 0;
+      return 0
    }
    static set(score) {
-      localStorage.setItem(this.name, score )
+      localStorage.setItem(this.name, score)
    }
 
 }

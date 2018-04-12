@@ -31,7 +31,7 @@ class Game extends Component {
    state = this.initState()
 
    initState() {
-      return { 
+      return {
          cells: initCells(CELLS),
          currentCell: null,
          score: 0,
@@ -46,44 +46,42 @@ class Game extends Component {
    openHandler = (id) => {
       const idx = this.state.cells.findIndex(cell => cell.id === id)
       const updatedCells = cloneDeep(this.state.cells)
-      updatedCells[idx].closed =  false 
-      /**  Start Game  */
-      if (this.state.score === 0 ) {                                       
+      updatedCells[idx].closed = false
+
+      if (this.state.score === 0) {
+         /**  Start Game  */
          this.setState({ cells: updatedCells, currentCell: updatedCells[idx], attempt: 1 })
          this.updateScore()
-      } 
-      /**  Open first tile  */
-      else if (this.state.score > 0 && !this.state.currentCell) {        
+      } else if (this.state.score > 0 && !this.state.currentCell) {
+         /**  Open first tile  */
          this.setState({ cells: updatedCells, currentCell: updatedCells[idx], attempt: 1 })
-      } 
-      /**  Open second tile  */
-      else { 
-         /** if color match  */
-         if( this.state.currentCell.color === updatedCells[idx].color ) {  
+      } else {
+         /**  Open second tile  */
+         if (this.state.currentCell.color === updatedCells[idx].color) {
+            /** if color match  */
             this.updateScore(this.state.attempt)
-            this.setState({ 
+            this.setState({
                cells: updatedCells, currentCell: null, attempt: 0
             }, () => this.isWinner())
             this.resetTouched(updatedCells)
-         } 
-         /** if color don't match  */
-         else if ( this.state.currentCell.color !== updatedCells[idx].color && !updatedCells[idx].touched ) {
+         } else if (this.state.currentCell.color !== updatedCells[idx].color && !updatedCells[idx].touched) {
+            /** if color don't match  */
             const newAttempt = this.state.attempt + 1
-            updatedCells[idx].closed =  true
+            updatedCells[idx].closed = true
             updatedCells[idx].touched = true
-            this.setState({ cells: updatedCells, attempt: newAttempt })                                                    
+            this.setState({ cells: updatedCells, attempt: newAttempt })
          }
       }
    }
    updateScore = (attempt = 1) => {
       const oldScore = this.state.score
-      const visibleCells = this.state.cells.filter( item => item.closed)
-      const newScore = oldScore + Math.round((visibleCells.length * 100) / attempt )
+      const visibleCells = this.state.cells.filter(item => item.closed)
+      const newScore = oldScore + Math.round((visibleCells.length * 100) / attempt)
       this.setState({ score: newScore })
    }
    resetTouched = (updatedCells) => {
-      const newCells = updatedCells.map(item => { 
-         return {...item, touched : false }
+      const newCells = updatedCells.map(item => {
+         return { ...item, touched: false }
       })
       this.setState({ cells: newCells })
    }
@@ -91,19 +89,19 @@ class Game extends Component {
       this.setState({ isModalOpen: !this.state.isModalOpen })
    }
    isWinner = () => {
-      const isWinner = every( this.state.cells, { closed: false} )
-      if(isWinner) {
+      const isWinner = every(this.state.cells, { closed: false })
+      if (isWinner) {
          setTimeout(() => {
             this.toggleModal()
-         }, 1000 )
-         if(this.state.score > this.state.best) {
-            this.setState({ best : this.state.score })
+         }, 1000)
+         if (this.state.score > this.state.best) {
+            this.setState({ best: this.state.score })
             BestScore.set(this.state.score)
          }
       }
    }
    render() {
-      const {cells, best, attempt, score} = this.state
+      const { cells, best, attempt, score } = this.state
       return (
          <Fragment>
             <h1>Game</h1>
